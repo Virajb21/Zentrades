@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+<h2>Product Information</h2>
+
+<ul id="productList"></ul>
+
+<script>
+    // Assuming you have the JSON file downloaded locally
+    const apiUrl = 'https://s3.amazonaws.com/open-to-cors/assignment.json';
+
+    // Fetch JSON data from the local file
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            // Convert products object to array
+            const productsArray = Object.keys(data.products).map(key => {
+                return {
+                    id: key,
+                    ...data.products[key]
+                };
+            });
+
+            // Sort products by descending popularity
+            const sortedProducts = productsArray.sort((a, b) => b.popularity - a.popularity);
+
+            // Display product data
+            const productList = document.getElementById('productList');
+            sortedProducts.forEach(product => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `
+                    <strong>Title:</strong> ${product.title}<br>
+                    <strong>Price:</strong> ${product.price}<br>
+                    <strong>Popularity:</strong> ${product.popularity}<br>
+                    <strong>Subcategory:</strong> ${product.subcategory}<br>
+                    <hr>
+                `;
+                productList.appendChild(listItem);
+            });
+        })
+        .catch(error => console.log('Error fetching data:', error));
+</script>
+
+</body>
+</html>
